@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriBot - AI Nutrition Agent</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-heart-pulse-fill me-2 fs-3"></i>
+                <span class="fw-bold">NutriBot</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#chat">Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#meal-plan">Meal Plan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#bmi">BMI Calculator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#family">Family</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <button class="btn btn-outline-light btn-sm" id="darkModeToggle">
+                            <i class="bi bi-moon-stars-fill"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h1 class="display-3 fw-bold mb-4 animate-fade-in">
+                        Your Personal <span class="text-gradient">AI Nutrition</span> Expert
+                    </h1>
+                    <p class="lead mb-4 animate-fade-in-delay">
+                        Get personalized nutrition advice, meal plans, and health insights powered by IBM Watsonx.ai and Granite models. Specialized in Indian cuisine and family nutrition.
+                    </p>
+                    <div class="d-flex gap-3 animate-fade-in-delay-2">
+                        <a href="#chat" class="btn btn-primary btn-lg">
+                            <i class="bi bi-chat-dots me-2"></i>Start Chat
+                        </a>
+                        <a href="#meal-plan" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-calendar-check me-2"></i>Get Meal Plan
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image animate-float">
+                        <i class="bi bi-apple display-1 text-primary"></i>
+                        <i class="bi bi-egg-fried display-1 text-warning"></i>
+                        <i class="bi bi-cup-hot display-1 text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <h4>AI-Powered Advice</h4>
+                        <p>Get intelligent nutrition guidance powered by IBM Watsonx.ai Granite models</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-globe-asia-australia"></i>
+                        </div>
+                        <h4>Indian Cuisine Expert</h4>
+                        <p>Specialized in Indian foods, regional dishes, and traditional meal patterns</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h4>Family Support</h4>
+                        <p>Manage nutrition profiles for entire family with personalized recommendations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chat Section -->
+    <section id="chat" class="section-padding">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="display-5 fw-bold">Chat with NutriBot</h2>
+                <p class="lead text-muted">Ask anything about nutrition, diet, and healthy eating</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="welcome-message">
+                                <i class="bi bi-robot fs-1 text-primary mb-3"></i>
+                                <h5>Welcome to NutriBot!</h5>
+                                <p>I'm your AI nutrition expert. Ask me about:</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Personalized meal plans</li>
+                                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Calorie counting</li>
+                                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Indian food nutrition</li>
+                                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Weight management</li>
+                                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Family nutrition</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="chatInput" placeholder="Type your nutrition question...">
+                                <button class="btn btn-primary" id="sendBtn">
+                                    <i class="bi bi-send-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section-padding bg-light">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="display-5 fw-bold">Nutrition Dashboard</h2>
+                <p class="lead text-muted">Track your daily nutrition and health metrics</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary">
+                            <i class="bi bi-fire"></i>
+                        </div>
+                        <h3 id="caloriesCount">0</h3>
+                        <p>Calories Today</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success">
+                            <i class="bi bi-egg"></i>
+                        </div>
+                        <h3 id="proteinCount">0g</h3>
+                        <p>Protein</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning">
+                            <i class="bi bi-droplet"></i>
+                        </div>
+                        <h3 id="carbsCount">0g</h3>
+                        <p>Carbs</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-info">
+                            <i class="bi bi-heart-pulse"></i>
+                        </div>
+                        <h3 id="fatsCount">0g</h3>
+                        <p>Fats</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Analysis -->
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">
+                                <i class="bi bi-search me-2"></i>Analyze Food Items
+                            </h5>
+                            <div class="mb-3">
+                                <textarea class="form-control" id="foodItems" rows="3" placeholder="Enter food items (e.g., 2 roti, 1 bowl dal, 1 cup rice)"></textarea>
+                            </div>
+                            <button class="btn btn-primary" id="analyzeBtn">
+                                <i class="bi bi-calculator me-2"></i>Analyze Nutrition
+                            </button>
+                            <div id="analysisResult" class="mt-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meal Plan Section -->
+    <section id="meal-plan" class="section-padding">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="display-5 fw-bold">Personalized Meal Plan</h2>
+                <p class="lead text-muted">Get AI-generated meal plans tailored to your needs</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">Your Profile</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Age</label>
+                                <input type="number" class="form-control" id="mealAge" placeholder="25">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" class="form-control" id="mealWeight" placeholder="70">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Height (cm)</label>
+                                <input type="number" class="form-control" id="mealHeight" placeholder="170">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Activity Level</label>
+                                <select class="form-select" id="activityLevel">
+                                    <option value="Sedentary">Sedentary</option>
+                                    <option value="Light" selected>Light</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Very Active">Very Active</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Diet Type</label>
+                                <select class="form-select" id="dietType">
+                                    <option value="Vegetarian" selected>Vegetarian</option>
+                                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                                    <option value="Vegan">Vegan</option>
+                                    <option value="Eggetarian">Eggetarian</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Goal</label>
+                                <select class="form-select" id="goal">
+                                    <option value="Weight Loss">Weight Loss</option>
+                                    <option value="Maintain Weight" selected>Maintain Weight</option>
+                                    <option value="Weight Gain">Weight Gain</option>
+                                    <option value="Muscle Building">Muscle Building</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Cuisine Preference</label>
+                                <select class="form-select" id="cuisine">
+                                    <option value="North Indian" selected>North Indian</option>
+                                    <option value="South Indian">South Indian</option>
+                                    <option value="Mixed Indian">Mixed Indian</option>
+                                    <option value="Continental">Continental</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100" id="generateMealPlanBtn">
+                                <i class="bi bi-magic me-2"></i>Generate Meal Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">
+                                <i class="bi bi-calendar-week me-2"></i>Your Meal Plan
+                            </h5>
+                            <div id="mealPlanResult">
+                                <div class="text-center text-muted py-5">
+                                    <i class="bi bi-calendar-plus display-1 mb-3"></i>
+                                    <p>Fill in your profile and click "Generate Meal Plan" to get started</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BMI Calculator Section -->
+    <section id="bmi" class="section-padding bg-light">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="display-5 fw-bold">BMI Calculator</h2>
+                <p class="lead text-muted">Calculate your Body Mass Index and get recommendations</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" class="form-control form-control-lg" id="bmiWeight" placeholder="70">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Height (cm)</label>
+                                <input type="number" class="form-control form-control-lg" id="bmiHeight" placeholder="170">
+                            </div>
+                            <button class="btn btn-primary btn-lg w-100" id="calculateBmiBtn">
+                                <i class="bi bi-calculator me-2"></i>Calculate BMI
+                            </button>
+                            <div id="bmiResult" class="mt-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Family Profile Section -->
+    <section id="family" class="section-padding">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="display-5 fw-bold">Family Profiles</h2>
+                <p class="lead text-muted">Manage nutrition for your entire family</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">Add Family Member</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" id="memberName" placeholder="John Doe">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Relation</label>
+                                <select class="form-select" id="memberRelation">
+                                    <option value="Self">Self</option>
+                                    <option value="Spouse">Spouse</option>
+                                    <option value="Child">Child</option>
+                                    <option value="Parent">Parent</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Age</label>
+                                <input type="number" class="form-control" id="memberAge" placeholder="25">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" class="form-control" id="memberWeight" placeholder="70">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Height (cm)</label>
+                                <input type="number" class="form-control" id="memberHeight" placeholder="170">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Diet Preference</label>
+                                <select class="form-select" id="memberDiet">
+                                    <option value="Vegetarian">Vegetarian</option>
+                                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                                    <option value="Vegan">Vegan</option>
+                                    <option value="Eggetarian">Eggetarian</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100" id="addMemberBtn">
+                                <i class="bi bi-person-plus me-2"></i>Add Member
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">
+                                <i class="bi bi-people me-2"></i>Family Members
+                            </h5>
+                            <div id="familyMembers">
+                                <div class="text-center text-muted py-5">
+                                    <i class="bi bi-person-plus-fill display-1 mb-3"></i>
+                                    <p>Add family members to manage their nutrition profiles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-heart-pulse-fill me-2"></i>NutriBot
+                    </h5>
+                    <p class="text-muted">AI-powered nutrition guidance for healthier living. Powered by IBM Watsonx.ai and Granite models.</p>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <h6 class="fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#home" class="text-muted">Home</a></li>
+                        <li><a href="#chat" class="text-muted">Chat</a></li>
+                        <li><a href="#meal-plan" class="text-muted">Meal Plan</a></li>
+                        <li><a href="#bmi" class="text-muted">BMI Calculator</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-3">Disclaimer</h6>
+                    <p class="text-muted small">This is an AI assistant. Always consult healthcare professionals for medical advice.</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center text-muted">
+                <p class="mb-0">&copy; 2026 NutriBot. Powered by IBM Watsonx.ai</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
