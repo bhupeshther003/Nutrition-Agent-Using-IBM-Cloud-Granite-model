@@ -1,7 +1,14 @@
 Flask==3.0.0
+Flask-CORS==4.0.0
 python-dotenv==1.0.0
+PyPDF2==3.0.1
+python-docx==1.1.0
+chromadb==0.4.22
+sentence-transformers==2.3.1
+huggingface-hub==0.20.3
 ibm-watsonx-ai
-ibm-watson-machine-learning==1.0.335
-requests==2.31.0
+ibm-watson-machine-learning
+langchain==0.1.0
+langchain-community==0.0.10
+tiktoken==0.5.2
 Werkzeug==3.0.1
-gunicorn==21.2.0

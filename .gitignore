@@ -29,6 +29,14 @@ env/
 # Environment Variables
 .env
 
+# Flask
+instance/
+.webassets-cache
+
+# Uploads and Data
+uploads/
+vector_db/
+
 # IDE
 .vscode/
 .idea/
@@ -40,24 +48,15 @@ env/
 .DS_Store
 Thumbs.db
 
-# Flask
-instance/
-.webassets-cache
-
 # Logs
 *.log
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Deployment
-*.pyc
+# Jupyter Notebook
+.ipynb_checkpoints
 
 # Made with Bob

@@ -1,187 +1,183 @@
 """
-Test script to verify all features are working correctly
+Test script for Company Policy Assistant
+Tests the main functionality without running the full Flask app
 """
+
 import os
-import sys
-from dotenv import load_dotenv
+from document_processor import DocumentProcessor
+from vector_store import VectorStore
+from config import Config
 
-# Load environment variables
-load_dotenv()
-
-def test_environment_variables():
-    """Test if all required environment variables are set"""
+def test_document_processing():
+    """Test document processing"""
     print("=" * 60)
-    print("Testing Environment Variables")
-    print("=" * 60)
-    
-    required_vars = [
-        'IBM_CLOUD_API_KEY',
-        'IBM_WATSONX_PROJECT_ID',
-        'IBM_WATSONX_URL',
-        'FLASK_SECRET_KEY'
-    ]
-    
-    all_set = True
-    for var in required_vars:
-        value = os.getenv(var)
-        if value:
-            # Mask sensitive data
-            if 'KEY' in var or 'SECRET' in var:
-                display_value = value[:10] + '...' if len(value) > 10 else '***'
-            else:
-                display_value = value
-            print(f"[OK] {var}: {display_value}")
-        else:
-            print(f"[FAIL] {var}: NOT SET")
-            all_set = False
-    
-    print()
-    return all_set
-
-def test_imports():
-    """Test if all required packages are installed"""
-    print("=" * 60)
-    print("Testing Package Imports")
-    print("=" * 60)
-    
-    packages = [
-        ('flask', 'Flask'),
-        ('dotenv', 'python-dotenv'),
-        ('ibm_watsonx_ai', 'ibm-watsonx-ai'),
-        ('requests', 'requests')
-    ]
-    
-    all_imported = True
-    for package, name in packages:
-        try:
-            __import__(package)
-            print(f"[OK] {name} imported successfully")
-        except ImportError as e:
-            print(f"[FAIL] {name} import failed: {e}")
-            all_imported = False
-    
-    print()
-    return all_imported
-
-def test_watsonx_connection():
-    """Test IBM Watsonx.ai connection"""
-    print("=" * 60)
-    print("Testing IBM Watsonx.ai Connection")
+    print("TEST 1: Document Processing")
     print("=" * 60)
     
     try:
-        from ibm_watsonx_ai import Credentials
-        from ibm_watsonx_ai.foundation_models import Model
-        from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+        processor = DocumentProcessor()
         
-        credentials = Credentials(
-            url=os.getenv('IBM_WATSONX_URL'),
-            api_key=os.getenv('IBM_CLOUD_API_KEY')
-        )
+        # Test text extraction
+        text = processor.process_document('test_policy.txt')
+        print(f"✓ Successfully extracted {len(text)} characters from test_policy.txt")
         
-        print(f"[OK] Credentials created successfully")
-        print(f"  URL: {os.getenv('IBM_WATSONX_URL')}")
+        # Test chunking
+        chunks = processor.chunk_text(text, chunk_size=500, overlap=100)
+        print(f"✓ Successfully created {len(chunks)} chunks")
         
-        project_id = os.getenv('IBM_WATSONX_PROJECT_ID')
-        print(f"[OK] Project ID: {project_id}")
-        
-        # Try to create model instance
-        model = Model(
-            model_id='ibm/granite-13b-chat-v2',
-            params={
-                GenParams.DECODING_METHOD: "greedy",
-                GenParams.MAX_NEW_TOKENS: 100,
-                GenParams.MIN_NEW_TOKENS: 10,
-                GenParams.TEMPERATURE: 0.7,
-            },
-            credentials=credentials,
-            project_id=project_id
-        )
-        
-        print(f"[OK] Model instance created successfully")
-        print(f"  Model ID: ibm/granite-13b-chat-v2")
-        
-        # Try a simple test generation
-        print("\nTesting model generation...")
-        test_prompt = "Say 'Hello, I am NutriBot!' in one sentence."
-        response = model.generate_text(prompt=test_prompt)
-        print(f"[OK] Model response: {response[:100]}...")
-        
-        print("\n[OK] IBM Watsonx.ai connection successful!")
-        return True
-        
+        return True, chunks
     except Exception as e:
-        print(f"\n[FAIL] IBM Watsonx.ai connection failed: {str(e)}")
-        print("\nTroubleshooting tips:")
-        print("1. Check your IBM_CLOUD_API_KEY is correct")
-        print("2. Verify IBM_WATSONX_PROJECT_ID is valid")
-        print("3. Ensure your IBM Cloud account has Watsonx.ai access")
-        print("4. Check if the service is active in your region")
-        return False
+        print(f"✗ Document processing failed: {str(e)}")
+        return False, []
 
-def test_file_structure():
-    """Test if all required files exist"""
-    print("=" * 60)
-    print("Testing File Structure")
+def test_vector_store(chunks):
+    """Test vector store"""
+    print("\n" + "=" * 60)
+    print("TEST 2: Vector Store")
     print("=" * 60)
     
-    required_files = [
-        'app.py',
-        'requirements.txt',
-        '.env',
-        'templates/index.html',
-        'static/style.css',
-        'static/script.js',
-        'README.md'
-    ]
+    try:
+        # Initialize vector store
+        vector_store = VectorStore()
+        print("✓ Vector store initialized")
+        
+        # Add documents
+        num_added = vector_store.add_documents(
+            chunks,
+            document_name="test_policy.txt",
+            metadata={'test': True}
+        )
+        print(f"✓ Added {num_added} chunks to vector store")
+        
+        # Test search
+        results = vector_store.search("What is the leave policy?", top_k=3)
+        print(f"✓ Search returned {len(results)} results")
+        
+        if results:
+            print("\nTop result preview:")
+            print(f"  Text: {results[0]['text'][:100]}...")
+            print(f"  Distance: {results[0]['distance']:.4f}")
+        
+        return True, vector_store
+    except Exception as e:
+        print(f"✗ Vector store test failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False, None
+
+def test_watsonx_connection():
+    """Test Watsonx connection"""
+    print("\n" + "=" * 60)
+    print("TEST 3: Watsonx.ai Connection")
+    print("=" * 60)
     
-    all_exist = True
-    for file in required_files:
-        if os.path.exists(file):
-            print(f"[OK] {file} exists")
+    try:
+        from watsonx_client import WatsonxClient
+        
+        client = WatsonxClient()
+        print("✓ Watsonx client initialized")
+        
+        # Test connection
+        if client.test_connection():
+            print("✓ Successfully connected to Watsonx.ai")
+            return True, client
         else:
-            print(f"[FAIL] {file} missing")
-            all_exist = False
+            print("✗ Failed to connect to Watsonx.ai")
+            return False, None
+            
+    except Exception as e:
+        print(f"✗ Watsonx connection failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False, None
+
+def test_rag_pipeline(client, vector_store):
+    """Test complete RAG pipeline"""
+    print("\n" + "=" * 60)
+    print("TEST 4: RAG Pipeline (Question Answering)")
+    print("=" * 60)
     
-    print()
-    return all_exist
+    try:
+        # Search for relevant context
+        question = "How many days of annual leave do employees get?"
+        print(f"\nQuestion: {question}")
+        
+        results = vector_store.search(question, top_k=3)
+        print(f"✓ Retrieved {len(results)} relevant chunks")
+        
+        # Generate answer
+        response = client.generate_answer(question, results)
+        
+        if response['success']:
+            print(f"✓ Answer generated successfully")
+            print(f"\nAnswer: {response['answer']}")
+            print(f"\nSources: {len(response['sources'])} documents")
+            for source in response['sources']:
+                print(f"  - {source['document']}")
+            return True
+        else:
+            print(f"✗ Answer generation failed: {response.get('error', 'Unknown error')}")
+            return False
+            
+    except Exception as e:
+        print(f"✗ RAG pipeline test failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
 
 def main():
     """Run all tests"""
     print("\n" + "=" * 60)
-    print("NutriBot Application Test Suite")
+    print("COMPANY POLICY ASSISTANT - END-TO-END TEST")
     print("=" * 60 + "\n")
     
-    results = {
-        'Environment Variables': test_environment_variables(),
-        'Package Imports': test_imports(),
-        'File Structure': test_file_structure(),
-        'Watsonx.ai Connection': test_watsonx_connection()
-    }
+    # Test 1: Document Processing
+    success1, chunks = test_document_processing()
+    if not success1:
+        print("\n✗ Tests failed at document processing stage")
+        return
     
+    # Test 2: Vector Store
+    success2, vector_store = test_vector_store(chunks)
+    if not success2:
+        print("\n✗ Tests failed at vector store stage")
+        return
+    
+    # Test 3: Watsonx Connection
+    success3, client = test_watsonx_connection()
+    if not success3:
+        print("\n✗ Tests failed at Watsonx connection stage")
+        print("\nNote: Make sure your .env file has valid credentials:")
+        print("  - WATSONX_API_KEY")
+        print("  - WATSONX_PROJECT_ID")
+        print("  - WATSONX_URL")
+        return
+    
+    # Test 4: RAG Pipeline
+    success4 = test_rag_pipeline(client, vector_store)
+    
+    # Summary
     print("\n" + "=" * 60)
-    print("Test Summary")
+    print("TEST SUMMARY")
     print("=" * 60)
+    print(f"Document Processing: {'✓ PASSED' if success1 else '✗ FAILED'}")
+    print(f"Vector Store: {'✓ PASSED' if success2 else '✗ FAILED'}")
+    print(f"Watsonx Connection: {'✓ PASSED' if success3 else '✗ FAILED'}")
+    print(f"RAG Pipeline: {'✓ PASSED' if success4 else '✗ FAILED'}")
     
-    for test_name, result in results.items():
-        status = "[PASSED]" if result else "[FAILED]"
-        print(f"{test_name}: {status}")
-    
-    all_passed = all(results.values())
-    
-    print("\n" + "=" * 60)
-    if all_passed:
-        print("[SUCCESS] ALL TESTS PASSED!")
-        print("\nYour application is ready to run!")
-        print("Start the server with: python app.py")
+    if all([success1, success2, success3, success4]):
+        print("\n🎉 ALL TESTS PASSED! The application is ready to use.")
+        print("\nNext steps:")
+        print("1. Run: python app.py")
+        print("2. Open: http://localhost:5000")
+        print("3. Upload your company policy documents")
+        print("4. Start asking questions!")
     else:
-        print("[ERROR] SOME TESTS FAILED")
-        print("\nPlease fix the issues above before running the application.")
-    print("=" * 60 + "\n")
+        print("\n⚠ Some tests failed. Please check the errors above.")
     
-    return all_passed
+    print("=" * 60 + "\n")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 # Made with Bob

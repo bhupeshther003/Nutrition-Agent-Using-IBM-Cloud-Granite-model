@@ -1,399 +1,374 @@
-# 🍎 NutriBot - AI-Powered Nutrition Agent
+# Company Policy Assistant - RAG System
 
-An intelligent nutrition guidance web application powered by **IBM Watsonx.ai** and **Granite models**. Get personalized meal plans, calorie analysis, BMI calculations, and family nutrition management with a focus on Indian cuisine.
+A powerful Retrieval-Augmented Generation (RAG) system built with Python, Flask, and IBM Watsonx.ai that helps employees quickly find answers to company policy questions.
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)
-![IBM Watsonx.ai](https://img.shields.io/badge/IBM-Watsonx.ai-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+## Features
 
-## ✨ Features
+- 📄 **Multi-format Document Support**: Upload PDF, DOCX, and TXT files
+- 🔍 **Intelligent Search**: Vector-based semantic search using ChromaDB
+- 🤖 **AI-Powered Answers**: Generate accurate responses using IBM Watsonx.ai
+- 💬 **Modern Chat Interface**: Clean, responsive UI for easy interaction
+- 📚 **Source References**: Every answer includes source document references
+- 📝 **Chat History**: Track conversation history
+- 🔄 **Document Management**: Easy upload and deletion of policy documents
 
-### 🤖 AI-Powered Chat Interface
-- Real-time nutrition advice using IBM Watsonx.ai Granite models
-- Context-aware conversations with chat history
-- Specialized in Indian cuisine and dietary practices
-- Support for vegetarian, vegan, and non-vegetarian diets
+## Architecture
 
-### 📊 Nutrition Dashboard
-- Track daily calories, protein, carbs, and fats
-- Analyze nutritional content of Indian food items
-- Visual statistics with animated cards
-- Real-time food analysis
+```
+┌─────────────────┐
+│  User Interface │
+│   (Flask App)   │
+└────────┬────────┘
+         │
+    ┌────▼────┐
+    │ Upload  │
+    │Documents│
+    └────┬────┘
+         │
+    ┌────▼────────────┐
+    │ Document        │
+    │ Processor       │
+    │ (PDF/DOCX/TXT)  │
+    └────┬────────────┘
+         │
+    ┌────▼────────────┐
+    │ Text Chunking   │
+    │ & Embedding     │
+    └────┬────────────┘
+         │
+    ┌────▼────────────┐
+    │ Vector Store    │
+    │ (ChromaDB)      │
+    └────┬────────────┘
+         │
+    ┌────▼────────────┐
+    │ Question Asked  │
+    └────┬────────────┘
+         │
+    ┌────▼────────────┐
+    │ Semantic Search │
+    │ (Top K Results) │
+    └────┬────────────┘
+         │
+    ┌────▼────────────┐
+    │ IBM Watsonx.ai  │
+    │ (Answer Gen)    │
+    └────┬────────────┘
+         │
+    ┌────▼────────────┐
+    │ Response with   │
+    │ Sources         │
+    └─────────────────┘
+```
 
-### 🍽️ Personalized Meal Planning
-- AI-generated meal plans based on:
-  - Age, weight, height, and activity level
-  - Diet preferences (Vegetarian, Non-Veg, Vegan, Eggetarian)
-  - Goals (Weight loss, maintenance, gain, muscle building)
-  - Cuisine preferences (North Indian, South Indian, Mixed, Continental)
-- Detailed calorie and macronutrient breakdown
-- Practical, affordable Indian meal suggestions
-
-### 📏 BMI Calculator
-- Calculate Body Mass Index
-- Get category classification (Underweight, Normal, Overweight, Obese)
-- Receive personalized health recommendations
-- Color-coded results for easy understanding
-
-### 👨‍👩‍👧‍👦 Family Profile Management
-- Create profiles for multiple family members
-- Track nutrition for entire family
-- Individual dietary preferences and goals
-- Easy-to-manage member cards
-
-### 🎨 Modern UI/UX
-- Responsive design for mobile, tablet, and desktop
-- Dark mode support with toggle
-- Smooth animations and transitions
-- Bootstrap 5 with custom styling
-- Gradient backgrounds and modern cards
-
-## 🚀 Quick Start
-
-### Prerequisites
+## Prerequisites
 
 - Python 3.8 or higher
 - IBM Cloud account with Watsonx.ai access
-- IBM Cloud API Key
-- Watsonx.ai Project ID
+- API Key and Project ID from IBM Watsonx.ai
 
-### Installation
+## Installation
 
-1. **Clone or download the project**
-   ```bash
-   cd nutribot-app
-   ```
+### 1. Clone or Download the Project
 
-2. **Create a virtual environment**
-   ```bash
-   python -m venv .venv
-   ```
+```bash
+cd company-policy-assistant
+```
 
-3. **Activate the virtual environment**
-   
-   Windows:
-   ```bash
-   .venv\Scripts\activate
-   ```
-   
-   Linux/Mac:
-   ```bash
-   source .venv/bin/activate
-   ```
+### 2. Create Virtual Environment
 
-4. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+# Windows
+python -m venv .venv
+.venv\Scripts\activate
 
-5. **Configure environment variables**
-   
-   Copy `.env.example` to `.env`:
-   ```bash
-   copy .env.example .env  # Windows
-   cp .env.example .env    # Linux/Mac
-   ```
-   
-   Edit `.env` and add your credentials:
-   ```env
-   IBM_CLOUD_API_KEY=your_actual_api_key_here
-   IBM_WATSONX_PROJECT_ID=your_project_id_here
-   IBM_WATSONX_URL=https://us-south.ml.cloud.ibm.com
-   FLASK_SECRET_KEY=your_secret_key_here
-   FLASK_ENV=development
-   ```
+# Linux/Mac
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-6. **Run the application**
-   ```bash
-   python app.py
-   ```
+### 3. Install Dependencies
 
-7. **Open your browser**
-   
-   Navigate to: `http://localhost:5000`
+```bash
+pip install -r requirements.txt
+```
 
-## 🔑 Getting IBM Watsonx.ai Credentials
+### 4. Configure Environment Variables
 
-### Step 1: Create IBM Cloud Account
+Copy `.env.example` to `.env`:
+
+```bash
+# Windows
+copy .env.example .env
+
+# Linux/Mac
+cp .env.example .env
+```
+
+Edit `.env` and add your IBM Watsonx.ai credentials:
+
+```env
+# IBM Watsonx.ai Configuration
+WATSONX_API_KEY=your_api_key_here
+WATSONX_PROJECT_ID=your_project_id_here
+WATSONX_URL=https://us-south.ml.cloud.ibm.com
+
+# Model Configuration
+WATSONX_MODEL_ID=ibm/granite-13b-chat-v2
+WATSONX_MAX_TOKENS=500
+WATSONX_TEMPERATURE=0.7
+
+# Application Configuration
+FLASK_SECRET_KEY=your_secret_key_here
+UPLOAD_FOLDER=uploads
+VECTOR_DB_PATH=vector_db
+MAX_CONTENT_LENGTH=16777216
+
+# Embedding Model
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+```
+
+### 5. Get IBM Watsonx.ai Credentials
+
 1. Go to [IBM Cloud](https://cloud.ibm.com/)
-2. Sign up for a free account or log in
+2. Create a Watsonx.ai service instance
+3. Get your API Key from IBM Cloud IAM
+4. Get your Project ID from Watsonx.ai project settings
 
-### Step 2: Create Watsonx.ai Project
-1. Navigate to **IBM Watsonx.ai** service
-2. Create a new project
-3. Note your **Project ID** from project settings
+## Usage
 
-### Step 3: Generate API Key
-1. Go to **Manage** → **Access (IAM)**
-2. Select **API keys** from the left menu
-3. Click **Create an IBM Cloud API key**
-4. Copy and save your API key securely
+### Start the Application
 
-### Step 4: Configure the Application
-Add your credentials to the `.env` file as shown in the installation steps.
-
-## 🎯 Customizing the Agent
-
-The nutrition agent behavior can be easily customized by editing the `AGENT_INSTRUCTIONS` section in `app.py`:
-
-```python
-AGENT_INSTRUCTIONS = """
-You are NutriBot, an expert AI Nutrition Agent...
-
-## Your Role & Tone:
-- Modify the agent's personality and communication style
-
-## Specializations:
-- Add or remove areas of expertise
-
-## Indian Food Preferences:
-- Customize regional food preferences
-- Add specific dietary restrictions
-
-## Safety Rules & Limitations:
-- Define what the agent should and shouldn't do
-
-## Response Format:
-- Customize how responses are structured
-"""
+```bash
+python app.py
 ```
 
-### Customization Examples:
+The application will start on `http://localhost:5000`
 
-**Change Tone:**
-```python
-## Your Role & Tone:
-- Be professional and clinical
-- Use technical nutrition terminology
-- Provide evidence-based recommendations
-```
+### Upload Documents
 
-**Add Specialization:**
-```python
-## Specializations:
-- Keto diet planning
-- Intermittent fasting guidance
-- Sports nutrition for athletes
-- Pregnancy nutrition
-```
+1. Click on the upload area or drag and drop files
+2. Supported formats: PDF, DOCX, TXT
+3. Documents are automatically processed and indexed
 
-**Regional Preferences:**
-```python
-## Indian Food Preferences:
-- Focus on South Indian cuisine (dosa, idli, sambar)
-- Include Bengali dishes (fish curry, mishti)
-- Suggest Gujarati thali options
-```
+### Ask Questions
 
-## 📁 Project Structure
+1. Type your question in the chat input
+2. Press Enter or click the send button
+3. Receive AI-generated answers with source references
+
+### Example Questions
+
+- "What is the company's leave policy?"
+- "How do I apply for remote work?"
+- "What are the travel reimbursement guidelines?"
+- "What is the security policy for handling sensitive data?"
+- "How many sick days am I entitled to?"
+
+## Project Structure
 
 ```
-nutribot-app/
-├── app.py                 # Flask backend with Watsonx.ai integration
+company-policy-assistant/
+├── app.py                  # Flask application
+├── config.py              # Configuration settings
+├── document_processor.py  # Document parsing and chunking
+├── vector_store.py        # ChromaDB vector database
+├── watsonx_client.py      # IBM Watsonx.ai integration
 ├── requirements.txt       # Python dependencies
 ├── .env.example          # Environment variables template
-├── .env                  # Your actual credentials (not in git)
+├── .env                  # Your environment variables (create this)
 ├── README.md             # This file
 ├── templates/
 │   └── index.html        # Main HTML template
 ├── static/
-│   ├── style.css         # Custom CSS styles
-│   └── script.js         # JavaScript functionality
-└── .venv/                # Virtual environment (created during setup)
+│   ├── style.css         # Stylesheet
+│   └── script.js         # Frontend JavaScript
+├── uploads/              # Uploaded documents (auto-created)
+└── vector_db/            # Vector database storage (auto-created)
 ```
 
-## 🛠️ Technology Stack
+## Configuration
 
-### Backend
-- **Flask 3.0.0** - Web framework
-- **IBM Watsonx.ai** - AI/ML platform
-- **IBM Granite Models** - Large language models
-- **Python-dotenv** - Environment variable management
+### Adjust RAG Parameters
 
-### Frontend
-- **Bootstrap 5.3.2** - UI framework
-- **Bootstrap Icons** - Icon library
-- **Google Fonts (Poppins)** - Typography
-- **Vanilla JavaScript** - Interactivity
-- **CSS3** - Custom styling with animations
+Edit `config.py` to customize:
 
-### AI Model
-- **IBM Granite 13B Chat v2** - Conversational AI model
-- Optimized for nutrition and health guidance
-- Context-aware responses
-- Indian cuisine expertise
+```python
+# Text chunking
+CHUNK_SIZE = 1000          # Characters per chunk
+CHUNK_OVERLAP = 200        # Overlap between chunks
 
-## 🌐 Deployment
+# Retrieval
+TOP_K_RESULTS = 3          # Number of relevant chunks to retrieve
 
-### Deploy to IBM Cloud
+# Model parameters
+WATSONX_MAX_TOKENS = 500   # Maximum response length
+WATSONX_TEMPERATURE = 0.7  # Response creativity (0-1)
+```
 
-1. **Install IBM Cloud CLI**
-   ```bash
-   # Download from: https://cloud.ibm.com/docs/cli
-   ```
+### Change Embedding Model
 
-2. **Login to IBM Cloud**
-   ```bash
-   ibmcloud login
-   ```
+You can use different sentence-transformers models:
 
-3. **Create a Cloud Foundry app**
-   ```bash
-   ibmcloud cf push nutribot-app
-   ```
+```env
+# Faster, smaller model
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 
-### Deploy to Heroku
+# More accurate, larger model
+EMBEDDING_MODEL=sentence-transformers/all-mpnet-base-v2
+```
 
-1. **Install Heroku CLI**
-   ```bash
-   # Download from: https://devcenter.heroku.com/articles/heroku-cli
-   ```
+### Change Watsonx Model
 
-2. **Create Heroku app**
-   ```bash
-   heroku create nutribot-app
-   ```
+Available models include:
 
-3. **Set environment variables**
-   ```bash
-   heroku config:set IBM_CLOUD_API_KEY=your_key
-   heroku config:set IBM_WATSONX_PROJECT_ID=your_project_id
-   heroku config:set FLASK_SECRET_KEY=your_secret
-   ```
+- `ibm/granite-13b-chat-v2` (recommended)
+- `meta-llama/llama-2-70b-chat`
+- `google/flan-ul2`
 
-4. **Deploy**
-   ```bash
-   git push heroku main
-   ```
+## API Endpoints
 
-### Deploy to AWS/Azure/GCP
+### Upload Document
+```
+POST /api/upload
+Content-Type: multipart/form-data
+Body: file (PDF/DOCX/TXT)
+```
 
-Use the provided `requirements.txt` and configure environment variables in your cloud platform's settings.
+### Ask Question
+```
+POST /api/ask
+Content-Type: application/json
+Body: {"question": "your question"}
+```
 
-## 📱 Features in Detail
+### Get Documents
+```
+GET /api/documents
+```
 
-### Chat Interface
-- **Real-time AI responses** using IBM Watsonx.ai
-- **Conversation history** for context-aware answers
-- **Markdown formatting** support in responses
-- **Smooth animations** for message appearance
-- **Auto-scroll** to latest messages
+### Delete Document
+```
+DELETE /api/documents/<document_name>
+```
 
-### Nutrition Dashboard
-- **Live statistics** for daily intake
-- **Food analysis** with detailed breakdown
-- **Calorie tracking** with visual indicators
-- **Macronutrient display** (Protein, Carbs, Fats)
+### Get Chat History
+```
+GET /api/history
+```
 
-### Meal Planning
-- **Personalized plans** based on user profile
-- **Multiple diet types** support
-- **Goal-oriented** recommendations
-- **Cuisine preferences** (Indian regional foods)
-- **Detailed meal breakdown** with calories
+### Clear Chat History
+```
+DELETE /api/history
+```
 
-### BMI Calculator
-- **Instant calculation** with visual feedback
-- **Category classification** with color coding
-- **Health recommendations** based on BMI
-- **Easy-to-understand** results
+### Health Check
+```
+GET /api/health
+```
 
-### Family Profiles
-- **Multiple member support**
-- **Individual tracking** for each member
-- **Dietary preferences** per person
-- **Easy management** with add/remove functionality
+## Troubleshooting
 
-## 🎨 UI Features
+### Issue: "Watsonx client not initialized"
 
-- ✅ **Responsive Design** - Works on all devices
-- ✅ **Dark Mode** - Eye-friendly night mode
-- ✅ **Smooth Animations** - Professional transitions
-- ✅ **Modern Gradients** - Beautiful color schemes
-- ✅ **Loading Indicators** - Clear feedback
-- ✅ **Toast Notifications** - Non-intrusive alerts
-- ✅ **Smooth Scrolling** - Enhanced navigation
+**Solution**: Check your `.env` file and ensure `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` are set correctly.
 
-## 🔒 Security Best Practices
+### Issue: "Import errors" when starting
 
-1. **Never commit `.env` file** to version control
-2. **Use strong secret keys** for Flask sessions
-3. **Keep API keys secure** and rotate regularly
-4. **Use HTTPS** in production
-5. **Validate user inputs** on both client and server
-6. **Implement rate limiting** for API calls
-
-## 🐛 Troubleshooting
-
-### Issue: "Import flask could not be resolved"
-**Solution:** Activate virtual environment and install dependencies
+**Solution**: Make sure you've activated the virtual environment and installed all dependencies:
 ```bash
-.venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
-### Issue: "Failed to initialize AI model"
-**Solution:** Check your IBM Cloud credentials in `.env` file
-- Verify API key is correct
-- Ensure Project ID is valid
-- Check Watsonx.ai service is active
+### Issue: "File upload fails"
 
-### Issue: "Connection timeout"
-**Solution:** Check your internet connection and IBM Cloud service status
+**Solution**: Check file size (default max: 16MB) and format (PDF, DOCX, TXT only).
 
-### Issue: Dark mode not persisting
-**Solution:** Clear browser cache and localStorage
+### Issue: "No relevant information found"
 
-## 📝 API Endpoints
+**Solution**: 
+- Upload more relevant documents
+- Try rephrasing your question
+- Check if documents were processed successfully
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Main application page |
-| `/chat` | POST | Send message to AI agent |
-| `/calculate-bmi` | POST | Calculate BMI |
-| `/generate-meal-plan` | POST | Generate personalized meal plan |
-| `/analyze-food` | POST | Analyze food nutritional content |
-| `/family-profile` | POST | Save family member profiles |
-| `/get-family-profile` | GET | Retrieve family profiles |
+## Performance Optimization
 
-## 🤝 Contributing
+### For Large Document Collections
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. **Increase chunk size** for longer documents:
+   ```python
+   CHUNK_SIZE = 1500
+   ```
 
-## 📄 License
+2. **Adjust TOP_K_RESULTS** for more context:
+   ```python
+   TOP_K_RESULTS = 5
+   ```
 
-This project is licensed under the MIT License.
+3. **Use a more powerful embedding model**:
+   ```env
+   EMBEDDING_MODEL=sentence-transformers/all-mpnet-base-v2
+   ```
 
-## 🙏 Acknowledgments
+## Security Considerations
 
-- **IBM Watsonx.ai** for providing the AI platform
-- **IBM Granite Models** for powerful language understanding
-- **Bootstrap** for the UI framework
-- **Flask** community for the excellent web framework
+1. **API Keys**: Never commit `.env` file to version control
+2. **File Upload**: Validate file types and sizes
+3. **Production**: Use a production WSGI server (gunicorn, uWSGI)
+4. **HTTPS**: Always use HTTPS in production
+5. **Authentication**: Add user authentication for production use
 
-## 📧 Support
+## Deployment
 
-For issues and questions:
-- Check the troubleshooting section
-- Review IBM Watsonx.ai documentation
-- Open an issue on the project repository
+### Using Gunicorn (Production)
 
-## 🔮 Future Enhancements
+```bash
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
+```
 
-- [ ] Recipe suggestions with step-by-step instructions
-- [ ] Grocery list generation
-- [ ] Integration with fitness trackers
-- [ ] Multi-language support
-- [ ] Voice input for queries
-- [ ] PDF export for meal plans
-- [ ] Weekly meal planning calendar
-- [ ] Water intake tracking
-- [ ] Exercise recommendations
-- [ ] Progress tracking with charts
+### Using Docker
+
+Create `Dockerfile`:
+
+```dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+```
+
+Build and run:
+
+```bash
+docker build -t policy-assistant .
+docker run -p 5000:5000 --env-file .env policy-assistant
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+## License
+
+This project is provided as-is for educational and commercial use.
+
+## Support
+
+For issues or questions:
+1. Check the troubleshooting section
+2. Review IBM Watsonx.ai documentation
+3. Open an issue in the repository
+
+## Acknowledgments
+
+- IBM Watsonx.ai for AI capabilities
+- ChromaDB for vector storage
+- Sentence Transformers for embeddings
+- Flask for web framework
 
 ---
 
-**Built with ❤️ using IBM Watsonx.ai and Flask**
-
-*Disclaimer: This application provides general nutrition information and should not replace professional medical advice. Always consult healthcare professionals for medical concerns.*
+**Built with ❤️ for better employee experience**
