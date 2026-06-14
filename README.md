@@ -1,374 +1,343 @@
-# Company Policy Assistant - RAG System
+# Multi-Agent Resume Screening System
 
-A powerful Retrieval-Augmented Generation (RAG) system built with Python, Flask, and IBM Watsonx.ai that helps employees quickly find answers to company policy questions.
+A sophisticated AI-powered resume screening system built with Python, Flask, IBM Watsonx.ai, and IBM Granite models. This system uses four specialized AI agents to automatically parse, match, score, and provide detailed feedback on candidate resumes.
 
-## Features
+## 🌟 Features
 
-- 📄 **Multi-format Document Support**: Upload PDF, DOCX, and TXT files
-- 🔍 **Intelligent Search**: Vector-based semantic search using ChromaDB
-- 🤖 **AI-Powered Answers**: Generate accurate responses using IBM Watsonx.ai
-- 💬 **Modern Chat Interface**: Clean, responsive UI for easy interaction
-- 📚 **Source References**: Every answer includes source document references
-- 📝 **Chat History**: Track conversation history
-- 🔄 **Document Management**: Easy upload and deletion of policy documents
+### Multi-Agent Architecture
+- **Parser Agent**: Extracts structured information from resumes (PDF/DOCX)
+- **Matcher Agent**: Compares candidate profiles with job requirements
+- **Scoring Agent**: Calculates match percentages and ranks candidates
+- **Feedback Agent**: Generates detailed hiring insights and recommendations
 
-## Architecture
+### Key Capabilities
+- ✅ Upload multiple resumes (PDF/DOCX format)
+- ✅ AI-powered resume parsing and information extraction
+- ✅ Intelligent skill matching and gap analysis
+- ✅ Weighted scoring algorithm (Skills 40%, Experience 30%, Education 20%, Additional 10%)
+- ✅ Automated candidate ranking
+- ✅ Detailed AI-generated feedback and recommendations
+- ✅ Modern, responsive web interface
+- ✅ Downloadable PDF reports
+- ✅ Database storage for all screening data
+
+## 🏗️ Architecture
 
 ```
-┌─────────────────┐
-│  User Interface │
-│   (Flask App)   │
-└────────┬────────┘
-         │
-    ┌────▼────┐
-    │ Upload  │
-    │Documents│
-    └────┬────┘
-         │
-    ┌────▼────────────┐
-    │ Document        │
-    │ Processor       │
-    │ (PDF/DOCX/TXT)  │
-    └────┬────────────┘
-         │
-    ┌────▼────────────┐
-    │ Text Chunking   │
-    │ & Embedding     │
-    └────┬────────────┘
-         │
-    ┌────▼────────────┐
-    │ Vector Store    │
-    │ (ChromaDB)      │
-    └────┬────────────┘
-         │
-    ┌────▼────────────┐
-    │ Question Asked  │
-    └────┬────────────┘
-         │
-    ┌────▼────────────┐
-    │ Semantic Search │
-    │ (Top K Results) │
-    └────┬────────────┘
-         │
-    ┌────▼────────────┐
-    │ IBM Watsonx.ai  │
-    │ (Answer Gen)    │
-    └────┬────────────┘
-         │
-    ┌────▼────────────┐
-    │ Response with   │
-    │ Sources         │
-    └─────────────────┘
+├── app/
+│   ├── agents/              # AI Agents
+│   │   ├── parser_agent.py
+│   │   ├── matcher_agent.py
+│   │   ├── scoring_agent.py
+│   │   └── feedback_agent.py
+│   ├── models/              # Database Models
+│   │   └── models.py
+│   ├── utils/               # Utilities
+│   │   ├── document_processor.py
+│   │   ├── watsonx_client.py
+│   │   └── report_generator.py
+│   ├── static/              # Frontend Assets
+│   │   ├── css/
+│   │   └── js/
+│   └── templates/           # HTML Templates
+├── uploads/                 # Resume uploads
+├── reports/                 # Generated reports
+├── app.py                   # Main Flask application
+├── config.py                # Configuration
+└── requirements.txt         # Dependencies
 ```
 
-## Prerequisites
+## 🚀 Installation
 
+### Prerequisites
 - Python 3.8 or higher
 - IBM Cloud account with Watsonx.ai access
-- API Key and Project ID from IBM Watsonx.ai
+- IBM Watsonx.ai API key and Project ID
 
-## Installation
-
-### 1. Clone or Download the Project
-
+### Step 1: Clone the Repository
 ```bash
-cd company-policy-assistant
+git clone <repository-url>
+cd resume-screening-system
 ```
 
-### 2. Create Virtual Environment
-
+### Step 2: Create Virtual Environment
 ```bash
-# Windows
 python -m venv .venv
+
+# Windows
 .venv\Scripts\activate
 
 # Linux/Mac
-python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install Dependencies
-
+### Step 3: Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment Variables
-
-Copy `.env.example` to `.env`:
-
-```bash
-# Windows
-copy .env.example .env
-
-# Linux/Mac
-cp .env.example .env
-```
-
-Edit `.env` and add your IBM Watsonx.ai credentials:
+### Step 4: Configure Environment Variables
+Create a `.env` file in the root directory:
 
 ```env
 # IBM Watsonx.ai Configuration
-WATSONX_API_KEY=your_api_key_here
+WATSONX_API_KEY=your_watsonx_api_key_here
 WATSONX_PROJECT_ID=your_project_id_here
 WATSONX_URL=https://us-south.ml.cloud.ibm.com
 
-# Model Configuration
-WATSONX_MODEL_ID=ibm/granite-13b-chat-v2
-WATSONX_MAX_TOKENS=500
-WATSONX_TEMPERATURE=0.7
+# IBM Granite Model
+GRANITE_MODEL_ID=ibm/granite-13b-chat-v2
 
-# Application Configuration
-FLASK_SECRET_KEY=your_secret_key_here
-UPLOAD_FOLDER=uploads
-VECTOR_DB_PATH=vector_db
-MAX_CONTENT_LENGTH=16777216
+# Flask Configuration
+SECRET_KEY=your_secret_key_here
+DEBUG=True
 
-# Embedding Model
-EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+# Database Configuration
+DATABASE_URL=sqlite:///resume_screening.db
+
+# Logging
+LOG_LEVEL=INFO
 ```
 
-### 5. Get IBM Watsonx.ai Credentials
+### Step 5: Initialize Database
+```bash
+python -c "from app import create_app; app = create_app(); app.app_context().push(); from app.models import db; db.create_all()"
+```
 
-1. Go to [IBM Cloud](https://cloud.ibm.com/)
-2. Create a Watsonx.ai service instance
-3. Get your API Key from IBM Cloud IAM
-4. Get your Project ID from Watsonx.ai project settings
-
-## Usage
+## 🎯 Usage
 
 ### Start the Application
-
 ```bash
 python app.py
 ```
 
-The application will start on `http://localhost:5000`
+The application will be available at `http://localhost:5000`
 
-### Upload Documents
+### Using the System
 
-1. Click on the upload area or drag and drop files
-2. Supported formats: PDF, DOCX, TXT
-3. Documents are automatically processed and indexed
+#### 1. Create Job Description
+- Enter job title, description, required skills, experience, and education
+- Click "Create Job & Continue"
 
-### Ask Questions
+#### 2. Upload Resumes
+- Drag and drop resume files (PDF/DOCX) or click to browse
+- Upload multiple resumes at once
+- Click "Upload Resumes"
 
-1. Type your question in the chat input
-2. Press Enter or click the send button
-3. Receive AI-generated answers with source references
+#### 3. Process Resumes
+- Click "Start AI Processing"
+- The system will:
+  - Extract information from each resume
+  - Match candidates with job requirements
+  - Calculate scores and rankings
+  - Generate detailed feedback
 
-### Example Questions
+#### 4. View Results
+- See ranked candidates with match percentages
+- Review detailed scores (Skills, Experience, Education)
+- Read AI-generated assessments
+- Identify matching and missing skills
 
-- "What is the company's leave policy?"
-- "How do I apply for remote work?"
-- "What are the travel reimbursement guidelines?"
-- "What is the security policy for handling sensitive data?"
-- "How many sick days am I entitled to?"
+#### 5. Download Report
+- Click "Download Report" to get a comprehensive PDF report
+- Report includes all candidates, scores, and recommendations
 
-## Project Structure
+## 🔧 Configuration
 
-```
-company-policy-assistant/
-├── app.py                  # Flask application
-├── config.py              # Configuration settings
-├── document_processor.py  # Document parsing and chunking
-├── vector_store.py        # ChromaDB vector database
-├── watsonx_client.py      # IBM Watsonx.ai integration
-├── requirements.txt       # Python dependencies
-├── .env.example          # Environment variables template
-├── .env                  # Your environment variables (create this)
-├── README.md             # This file
-├── templates/
-│   └── index.html        # Main HTML template
-├── static/
-│   ├── style.css         # Stylesheet
-│   └── script.js         # Frontend JavaScript
-├── uploads/              # Uploaded documents (auto-created)
-└── vector_db/            # Vector database storage (auto-created)
-```
-
-## Configuration
-
-### Adjust RAG Parameters
-
-Edit `config.py` to customize:
-
+### Model Parameters
+Adjust in `config.py`:
 ```python
-# Text chunking
-CHUNK_SIZE = 1000          # Characters per chunk
-CHUNK_OVERLAP = 200        # Overlap between chunks
-
-# Retrieval
-TOP_K_RESULTS = 3          # Number of relevant chunks to retrieve
-
-# Model parameters
-WATSONX_MAX_TOKENS = 500   # Maximum response length
-WATSONX_TEMPERATURE = 0.7  # Response creativity (0-1)
+MODEL_PARAMETERS = {
+    'decoding_method': 'greedy',
+    'max_new_tokens': 1000,
+    'temperature': 0.7,
+    'top_k': 50,
+    'top_p': 1,
+}
 ```
 
-### Change Embedding Model
-
-You can use different sentence-transformers models:
-
-```env
-# Faster, smaller model
-EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
-
-# More accurate, larger model
-EMBEDDING_MODEL=sentence-transformers/all-mpnet-base-v2
+### Scoring Weights
+Customize scoring weights in `config.py`:
+```python
+SCORING_WEIGHTS = {
+    'skills': 0.40,      # 40%
+    'experience': 0.30,  # 30%
+    'education': 0.20,   # 20%
+    'additional': 0.10   # 10%
+}
 ```
 
-### Change Watsonx Model
+## 📊 API Endpoints
 
-Available models include:
-
-- `ibm/granite-13b-chat-v2` (recommended)
-- `meta-llama/llama-2-70b-chat`
-- `google/flan-ul2`
-
-## API Endpoints
-
-### Upload Document
-```
-POST /api/upload
-Content-Type: multipart/form-data
-Body: file (PDF/DOCX/TXT)
-```
-
-### Ask Question
-```
-POST /api/ask
+### Create Job
+```http
+POST /api/jobs
 Content-Type: application/json
-Body: {"question": "your question"}
+
+{
+  "title": "Senior Software Engineer",
+  "description": "Job description...",
+  "required_skills": ["Python", "Flask", "AI"],
+  "required_experience": "3-5 years",
+  "required_education": "Bachelor's in CS"
+}
 ```
 
-### Get Documents
-```
-GET /api/documents
+### Upload Resumes
+```http
+POST /api/jobs/{job_id}/upload
+Content-Type: multipart/form-data
+
+resumes: [file1.pdf, file2.docx, ...]
 ```
 
-### Delete Document
-```
-DELETE /api/documents/<document_name>
-```
-
-### Get Chat History
-```
-GET /api/history
+### Process Resumes
+```http
+POST /api/jobs/{job_id}/process
 ```
 
-### Clear Chat History
-```
-DELETE /api/history
-```
-
-### Health Check
-```
-GET /api/health
+### Get Results
+```http
+GET /api/jobs/{job_id}/results
 ```
 
-## Troubleshooting
+### Download Report
+```http
+GET /api/jobs/{job_id}/report
+```
 
-### Issue: "Watsonx client not initialized"
+## 🧪 Testing
 
-**Solution**: Check your `.env` file and ensure `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` are set correctly.
-
-### Issue: "Import errors" when starting
-
-**Solution**: Make sure you've activated the virtual environment and installed all dependencies:
+### Run Tests
 ```bash
-pip install -r requirements.txt
+pytest tests/
 ```
 
-### Issue: "File upload fails"
+### Test Individual Components
+```python
+# Test document processor
+from app.utils import DocumentProcessor
+text = DocumentProcessor.extract_text('path/to/resume.pdf')
 
-**Solution**: Check file size (default max: 16MB) and format (PDF, DOCX, TXT only).
-
-### Issue: "No relevant information found"
-
-**Solution**: 
-- Upload more relevant documents
-- Try rephrasing your question
-- Check if documents were processed successfully
-
-## Performance Optimization
-
-### For Large Document Collections
-
-1. **Increase chunk size** for longer documents:
-   ```python
-   CHUNK_SIZE = 1500
-   ```
-
-2. **Adjust TOP_K_RESULTS** for more context:
-   ```python
-   TOP_K_RESULTS = 5
-   ```
-
-3. **Use a more powerful embedding model**:
-   ```env
-   EMBEDDING_MODEL=sentence-transformers/all-mpnet-base-v2
-   ```
-
-## Security Considerations
-
-1. **API Keys**: Never commit `.env` file to version control
-2. **File Upload**: Validate file types and sizes
-3. **Production**: Use a production WSGI server (gunicorn, uWSGI)
-4. **HTTPS**: Always use HTTPS in production
-5. **Authentication**: Add user authentication for production use
-
-## Deployment
-
-### Using Gunicorn (Production)
-
-```bash
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
+# Test Watsonx client
+from app.utils import create_watsonx_client
+from config import config
+client = create_watsonx_client(config['development'])
+response = client.generate_text("Test prompt")
 ```
 
-### Using Docker
+## 🎨 Customization
 
-Create `Dockerfile`:
+### Adding New Agents
+1. Create new agent file in `app/agents/`
+2. Implement agent class with required methods
+3. Register agent in `app.py`
+4. Update prompts in `config.py`
 
+### Modifying UI
+- Edit `app/templates/index.html` for structure
+- Modify `app/static/css/style.css` for styling
+- Update `app/static/js/main.js` for functionality
+
+### Custom Scoring Logic
+Modify `app/agents/scoring_agent.py`:
+```python
+def _calculate_custom_score(self, candidate_data, match_data):
+    # Your custom scoring logic
+    pass
+```
+
+## 🔒 Security Considerations
+
+- Store API keys in environment variables, never in code
+- Validate all file uploads
+- Implement rate limiting for API endpoints
+- Use HTTPS in production
+- Sanitize user inputs
+- Implement authentication for production use
+
+## 🚀 Deployment
+
+### Production Setup
+1. Set `DEBUG=False` in `.env`
+2. Use production-grade WSGI server (Gunicorn)
+3. Set up reverse proxy (Nginx)
+4. Use PostgreSQL instead of SQLite
+5. Implement proper logging and monitoring
+
+### Docker Deployment
 ```dockerfile
 FROM python:3.9-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:create_app()"]
 ```
 
-Build and run:
+## 📝 Database Schema
 
-```bash
-docker build -t policy-assistant .
-docker run -p 5000:5000 --env-file .env policy-assistant
-```
+### JobDescription
+- id, title, description, required_skills, required_experience, required_education, created_at
 
-## Contributing
+### Candidate
+- id, job_id, name, email, phone, resume_filename, resume_path
+- skills, education, experience, certifications, summary
+- match_score, skills_score, experience_score, education_score
+- matching_skills, missing_skills, strengths, gaps, recommendations
+- detailed_feedback, rank, status, created_at, updated_at
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
+### ScreeningSession
+- id, job_id, total_candidates, processed_candidates, status, started_at, completed_at
 
-## License
+## 🤝 Contributing
 
-This project is provided as-is for educational and commercial use.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-## Support
+## 📄 License
 
-For issues or questions:
-1. Check the troubleshooting section
-2. Review IBM Watsonx.ai documentation
-3. Open an issue in the repository
+This project is licensed under the MIT License.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - IBM Watsonx.ai for AI capabilities
-- ChromaDB for vector storage
-- Sentence Transformers for embeddings
-- Flask for web framework
+- IBM Granite models for natural language processing
+- Flask framework for web application
+- ReportLab for PDF generation
+
+## 📞 Support
+
+For issues, questions, or contributions:
+- Create an issue on GitHub
+- Contact: [your-email@example.com]
+
+## 🔄 Version History
+
+### v1.0.0 (2024)
+- Initial release
+- Multi-agent architecture
+- Resume parsing and matching
+- Scoring and ranking
+- PDF report generation
+- Modern web interface
+
+## 🎯 Future Enhancements
+
+- [ ] Real-time processing with WebSockets
+- [ ] Email notifications
+- [ ] Interview scheduling integration
+- [ ] Video resume analysis
+- [ ] Multi-language support
+- [ ] Advanced analytics dashboard
+- [ ] API authentication
+- [ ] Batch processing optimization
+- [ ] Integration with ATS systems
+- [ ] Mobile application
 
 ---
 
-**Built with ❤️ for better employee experience**
+**Built with ❤️ using IBM Watsonx.ai and Granite Models**

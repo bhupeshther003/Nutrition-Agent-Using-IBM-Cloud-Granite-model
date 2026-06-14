@@ -26,16 +26,18 @@ venv/
 ENV/
 env/
 
-# Environment Variables
-.env
-
 # Flask
 instance/
 .webassets-cache
 
-# Uploads and Data
-uploads/
-vector_db/
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment Variables
+.env
+.env.local
 
 # IDE
 .vscode/
@@ -50,13 +52,25 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
+
+# Uploads and Reports
+uploads/*
+!uploads/.gitkeep
+reports/*
+!reports/.gitkeep
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# Documentation
+docs/_build/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
 
 # Made with Bob
